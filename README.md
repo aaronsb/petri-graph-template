@@ -2,6 +2,20 @@
 
 A formal approach to agent prompt flow control that embraces the inherent creativity and diversity of language models by presenting tools as an attractive field of possibilities rather than rigid pathways.
 
+## 📄 Research Paper
+
+This implementation is accompanied by a research paper that provides the theoretical foundation:
+
+**[Beyond Sequential Thinking: How Building an MCP Server Revealed Why AI Agents Fail at Enterprise Workflows](./semantic-petri-net-paper-july-2025-comprehensive.pdf)**
+
+The paper documents the discovery of why finite state machine-based AI agents systematically fail at enterprise workflows, and how colored Petri nets provide a mathematical framework that aligns with how work actually happens. It includes the practical patterns that emerged during development and their theoretical validation.
+
+**Key insights from the paper:**
+- Why FSM-based agents create "phone tree from hell" experiences
+- How semantic hints encode Petri net output arcs
+- Why multi-entry workflows are essential for real-world usage
+- The information-theoretic foundation behind these patterns
+
 ## The Philosophy: APIs as Interpretative Landscapes
 
 ### The Reality of Modern APIs
