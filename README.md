@@ -80,9 +80,9 @@ graph TB
         P3 --> T3
     end
     
-    style LM fill:#f9f,stroke:#333,stroke-width:2px
-    style MCP fill:#bbf,stroke:#333,stroke-width:2px
-    style CPN fill:#bfb,stroke:#333,stroke-width:2px
+    style LM fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+    style MCP fill:#bbf,stroke:#333,stroke-width:2px,color:#000
+    style CPN fill:#bfb,stroke:#333,stroke-width:2px,color:#000
 ```
 
 ## Core Components
