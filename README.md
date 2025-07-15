@@ -168,10 +168,10 @@ npm run lint # Lint code
 ```mermaid
 stateDiagram-v2
     [*] --> Start
-    Start --> Search_Results: search:files
-    Search_Results --> File_Content: search:file:read
-    File_Content --> File_Written: write:file
-    File_Content --> File_Written: modify:file:write
+    Start --> Search_Results: search\:files
+    Search_Results --> File_Content: search\:file\:read
+    File_Content --> File_Written: write\:file
+    File_Content --> File_Written: modify\:file\:write
     File_Written --> [*]
     
     note right of Search_Results: Multiple paths available\nModel chooses based on context
