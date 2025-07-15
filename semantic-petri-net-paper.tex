@@ -91,16 +91,18 @@
 \maketitle
 
 \begin{abstract}
-While building a Model Context Protocol (MCP) server for Targetprocess, we discovered architectural patterns that fundamentally challenge how AI agents navigate complex enterprise workflows. Our implementation revealed that successful AI-assisted workflow navigation requires two key patterns: semantic hints that guide next actions, and multi-entry architectures that allow workflows to begin at any logical point. These patterns naturally align with Petri net theory—a mathematical framework for modeling concurrent, distributed systems. This alignment explains why traditional AI agents, built on finite state machine (FSM) assumptions, systematically fail when confronted with the inherently concurrent and multi-path nature of enterprise workflows. This paper documents our journey from building a practical tool to discovering a theoretical framework that reshapes how we think about AI agent architecture.
+While building Model Context Protocol (MCP) servers across diverse domains—enterprise systems (Targetprocess, Salesforce, Slack), knowledge management (Obsidian), and document authoring (TeXFlow)—we discovered architectural patterns that fundamentally challenge how AI agents navigate complex workflows. Across these varied implementations, the same patterns emerged independently: semantic hints that guide next actions, and multi-entry architectures that allow workflows to begin at any logical point. These patterns naturally align with Petri net theory—a mathematical framework for modeling concurrent, distributed systems. This alignment explains why traditional AI agents, built on finite state machine (FSM) assumptions, systematically fail when confronted with the inherently concurrent and multi-path nature of real-world workflows. Beyond enterprise contexts, these patterns appear in any domain where AI agents must navigate non-linear, context-dependent processes. This paper documents our journey from building practical tools across multiple domains to discovering a theoretical framework that reshapes how we think about AI agent architecture for complex, concurrent systems.
 \end{abstract}
 
-\section{Introduction: The Enterprise Workflow Challenge}
+\section{Introduction: The Complex Workflow Challenge}
 
-Anyone who has tried to use AI agents for complex enterprise tasks knows the frustration. You ask the agent to ``update the project status,'' and it responds with a rigid sequence: first create a project, then add tasks, then assign team members, and finally—after dozens of unnecessary steps—update the status. But you already have a project. You already have tasks. You just wanted to update the status.
+Anyone who has tried to use AI agents for complex enterprise tasks knows the frustration. You ask the agent to ``update the project status'' in Targetprocess, ``create a lead'' in Salesforce, or ``set my status'' in Slack, and it responds with a rigid sequence: first create a project, then add tasks, then assign team members, and finally—after dozens of unnecessary steps—update the status. But you already have a project. You already have tasks. You just wanted to update the status.
+
+This pattern repeats across enterprise systems: AI agents assume every interaction starts from zero, following predetermined paths that rarely match how real work happens.
 
 \subsection{The Phone Tree From Hell}
 
-Here's what happened when we first tested our Targetprocess MCP server with a simple request:
+Here's what happened when we first tested our enterprise MCP servers with simple requests across different systems:
 
 \textbf{User}: ``I need to start working on the authentication task''
 
@@ -167,13 +169,137 @@ Suggested commands:
 
 This pattern repeats across enterprise tools: AI agents assume every interaction starts from zero, following predetermined paths that rarely match how real work happens. Teams don't follow linear workflows. A developer might jump directly to logging time on a bug. A project manager might start by reviewing team capacity. A tester might begin by reopening a supposedly fixed issue. Real workflows have multiple entry points, concurrent activities, and context-dependent paths.
 
-We encountered this challenge firsthand while building an MCP server for Targetprocess, an agile project management platform. What started as a straightforward integration project became a journey of discovery that would fundamentally change how we think about AI agents and enterprise workflows.
+We encountered this challenge firsthand while building MCP servers for multiple enterprise platforms: Targetprocess (project management), Salesforce (CRM), Slack (team communication), and Obsidian (knowledge management). What started as straightforward integration projects became a journey of discovery that would fundamentally change how we think about AI agents and enterprise workflows.
 
 The problem wasn't just technical—it was conceptual. Traditional AI agents are built on finite state machine (FSM) principles: start here, follow this path, end there. But enterprise workflows don't work that way. They're more like busy intersections where multiple paths converge and diverge, where the right next step depends on who you are, what you're doing, and where you've been.
 
-This paper tells the story of how we discovered a better way. Through iterative development and real-world testing, we identified two architectural patterns that transformed our MCP server from a frustrating maze into an intuitive assistant. More surprisingly, we realized these patterns weren't new—they aligned perfectly with Petri net theory, a mathematical framework developed in the 1960s for modeling concurrent systems.
+This paper tells the story of how we discovered a better way. Through iterative development and real-world testing across multiple enterprise systems, we identified two architectural patterns that consistently transformed our MCP servers from frustrating mazes into intuitive assistants. More surprisingly, we realized these patterns weren't new—they aligned perfectly with Petri net theory, a mathematical framework developed in the 1960s for modeling concurrent systems.
 
 This discovery explains not just why our solution worked, but why traditional AI agents systematically fail at enterprise workflows. It's not a bug—it's a fundamental mismatch between tool architecture and workflow reality.
+
+\section{Cross-System Pattern Validation}
+
+The emergence of identical patterns across diverse enterprise systems provides strong evidence for the universality of these architectural principles. Each system implementation faced different technical constraints and user needs, yet converged on remarkably similar solutions.
+
+\subsection{Salesforce MCP: Early Validation}
+
+Our Salesforce MCP server was built early in the discovery process and demonstrated the first clear signs of semantic hinting patterns. Traditional Salesforce API interactions require extensive context gathering:
+
+\begin{lstlisting}[language=JavaScript]
+// Traditional approach: 12+ API calls to create a qualified lead
+listAccounts() → getAccount(id) → listContacts(accountId) → 
+createContact() → createLead() → assignLead() → updateStage() → 
+addToNurture() → scheduleFollowup() → notifyTeam() → updateCRM()
+\end{lstlisting}
+
+The semantic approach collapsed this into intelligent operations:
+
+\begin{lstlisting}[language=JavaScript]
+// Semantic approach: 1 operation with contextual intelligence
+createQualifiedLead({
+  company: "Acme Corp",
+  contact: "john@acme.com",
+  context: "inbound_demo_request"
+}) → {
+  leadCreated: true,
+  accountMatched: "existing_account_12345",
+  contactEnriched: true,
+  nextSteps: [
+    "Schedule demo using schedule_demo_call",
+    "Send welcome sequence using trigger_nurture_flow",
+    "Notify sales rep using notify_owner"
+  ]
+}
+\end{lstlisting}
+
+This pattern emerged before we understood its theoretical foundation, driven purely by user frustration with linear API navigation.
+
+\subsection{Slack MCP: OODA Loop Implementation}
+
+The Slack MCP server demonstrated how semantic hints naturally implement military-derived OODA (Observe, Orient, Decide, Act) loops:
+
+\begin{lstlisting}[language=JavaScript]
+// Semantic operation with OODA pattern
+updateWorkStatus({
+  status: "blocked",
+  context: "waiting_for_review"
+}) → {
+  observed: "3 team members online, 2 reviewers available",
+  oriented: "Code review bottleneck detected",
+  decided: "Suggest immediate escalation path",
+  action: "Status updated to 'blocked'",
+  nextSteps: [
+    "Ping @sarah-reviewer for urgent review",
+    "Escalate to @team-lead if no response in 30min",
+    "Switch to documentation tasks using switch_context"
+  ]
+}
+\end{lstlisting}
+
+The OODA loop pattern emerged because it naturally matches how teams actually coordinate work—through rapid feedback cycles rather than predetermined sequences.
+
+\subsection{Obsidian MCP: Knowledge Graph Navigation}
+
+The Obsidian implementation revealed how semantic hints enable non-linear knowledge navigation. Traditional note-taking assumes hierarchical organization, but knowledge work is associative:
+
+\begin{lstlisting}[language=JavaScript]
+// Semantic knowledge operations
+findRelatedConcepts({
+  topic: "quantum computing",
+  context: "research_paper_draft"
+}) → {
+  conceptsFound: ["quantum_entanglement", "qubits", "superposition"],
+  connections: [
+    "quantum_entanglement → bell_inequalities → locality_violations",
+    "qubits → quantum_gates → quantum_circuits"
+  ],
+  nextSteps: [
+    "Explore quantum_gates for technical depth",
+    "Link to bell_inequalities for theoretical foundation",
+    "Create quantum_circuits note for practical examples"
+  ]
+}
+\end{lstlisting}
+
+This demonstrates how semantic hints encode not just workflow state, but domain-specific reasoning patterns.
+
+\subsection{TeXFlow MCP: Document Lifecycle Intelligence}
+
+The TeXFlow MCP server (used to author this paper) exemplifies how semantic hints can guide complex document workflows. While not implementing full Petri nets, it builds on these foundational ideas:
+
+\begin{lstlisting}[language=JavaScript]
+// Semantic document operations
+document(action='create', content='research_paper', intent='academic_publication') → {
+  documentCreated: true,
+  formatDetected: 'latex',
+  templateApplied: 'academic_paper',
+  nextSteps: [
+    "Add sections using document(action='edit')",
+    "Validate structure using document(action='validate')",
+    "Generate PDF using output(action='export')"
+  ],
+  workflowHints: [
+    "Consider project(action='create') for organization",
+    "Use templates(action='list') for consistent formatting",
+    "Reference system available via reference(action='search')"
+  ]
+}
+\end{lstlisting}
+
+TeXFlow demonstrates how semantic operations can encode domain expertise—in this case, the complex lifecycle of academic document creation, revision, and publication. The tool doesn't just execute LaTeX commands; it understands the workflow patterns of document authoring and guides users through them naturally.
+
+\subsection{Pattern Consistency Across Domains}
+
+Despite serving completely different domains—CRM, team communication, knowledge management, and project tracking—all implementations converged on:
+
+\begin{enumerate}
+\item \textbf{Context-Aware Operations}: Tools that adapt behavior based on current state
+\item \textbf{Semantic Result Structures}: Consistent return patterns with nextSteps and suggestions
+\item \textbf{Multi-Entry Workflows}: Ability to begin operations from any logical point
+\item \textbf{Domain-Specific Intelligence}: Hints that encode domain expertise
+\end{enumerate}
+
+This consistency across diverse domains suggests these aren't domain-specific optimizations but fundamental principles of information flow in AI systems.
 
 \section{Visual Comparison: FSM vs Our Discovery}
 
@@ -1534,6 +1660,8 @@ This reference implementation demonstrates that the theoretical patterns describ
 [18] Bockelie, A. (2025). salesforce-cloud: MCP server providing AI-powered Salesforce tools for opportunity intelligence, conversation analysis, business case generation, and CRUD operations with natural language interaction. GitHub. \url{https://github.com/aaronsb/salesforce-cloud}
 
 [19] Bockelie, A. (2025). slack-mcp: Model Context Protocol (MCP) server for Slack that implements an OODA Loop pattern for intelligent workspace interaction, supporting both stdio and SSE transports without requiring admin permissions. GitHub. \url{https://github.com/aaronsb/slack-mcp}
+
+[20] Bockelie, A. (2025). texflow-mcp: MCP server enabling AI assistants to author, edit, and print documents using LaTeX/Markdown with collaborative editing and project-based organization. GitHub. \url{https://github.com/aaronsb/texflow-mcp}
 
 \subsection*{From the Architecture Guide}
 
