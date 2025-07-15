@@ -6,7 +6,7 @@ A formal approach to agent prompt flow control that embraces the inherent creati
 
 This implementation is accompanied by a research paper that provides the theoretical foundation:
 
-**[Beyond Sequential Thinking: How Building an MCP Server Revealed Why AI Agents Fail at Enterprise Workflows](./semantic-petri-net-paper-july-2025-comprehensive.pdf)**
+**[Beyond Sequential Thinking: How Building an MCP Server Revealed Why AI Agents Fail at Enterprise Workflows](./semantic-petri-net-paper-july-2025.pdf)**
 
 The paper documents the discovery of why finite state machine-based AI agents systematically fail at enterprise workflows, and how colored Petri nets provide a mathematical framework that aligns with how work actually happens. It includes the practical patterns that emerged during development and their theoretical validation.
 
