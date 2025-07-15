@@ -174,8 +174,8 @@ stateDiagram-v2
     File_Content --> File_Written: modify꞉file꞉write
     File_Written --> [*]
     
-    note right of Search_Results: Multiple paths available\nModel chooses based on context
-    note right of File_Content: Concurrent operations possible\nTokens can exist in multiple places
+    note right of Search_Results: Multiple paths available<br/>Model chooses based on context
+    note right of File_Content: Concurrent operations possible<br/>Tokens can exist in multiple places
 ```
 
 ## Real-World Applications
