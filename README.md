@@ -69,9 +69,9 @@ graph TB
         P1((Place 1))
         P2((Place 2))
         P3((Place 3))
-        T1[search:files]
-        T2[read:file]
-        T3[modify:file:write]
+        T1[search꞉files]
+        T2[read꞉file]
+        T3[modify꞉file꞉write]
         
         P1 -->|Token flow| T1
         T1 --> P2
