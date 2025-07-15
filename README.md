@@ -185,9 +185,10 @@ The server can then be connected to any MCP-compatible AI system.
 
 ### Development
 ```bash
-npm run dev  # Run with ts-node
-npm test     # Run tests
-npm run lint # Lint code
+npm run dev      # Run with ts-node
+npm run analytics # View workflow analytics
+npm test         # Run tests
+npm run lint     # Lint code
 ```
 
 ## Example Workflow
@@ -392,6 +393,47 @@ await server.start();
 - Adjust confidence scoring algorithms
 - Provide richer semantic hints
 - Consider model-specific adaptations
+
+## Workflow Analytics
+
+The MCP server includes a **lightweight analytics logger** that captures how language models navigate the semantic space. This enables empirical validation of the theoretical patterns described in the research paper.
+
+### Features
+
+- **Session Tracking**: Automatically groups tool calls into sessions with configurable timeouts
+- **Petri Net Metrics**: Captures token flow, confidence scores, and transition patterns
+- **Path Analysis**: Discovers common workflows and model preferences
+- **Error Tracking**: Identifies where transitions fail and why
+- **Lightweight Design**: Uses JSON Lines format, no external dependencies
+
+### Usage
+
+```bash
+# View real-time analytics
+npm run analytics
+
+# Show design insights
+npm run analytics insights
+```
+
+### Configuration
+
+Configure via environment variables:
+
+```bash
+export MCP_LOG_PATH=./workflow-logs        # Log storage location
+export MCP_SESSION_TIMEOUT_MINUTES=10      # Session timeout
+export MCP_LOGGING_ENABLED=true            # Enable logging
+export MCP_LOG_LEVEL=info                  # Log level
+```
+
+The analytics validate key research claims:
+- Models use multiple entry points (not linear workflows)
+- Confidence scores correlate with successful transitions
+- Different models discover different paths through the same net
+- Semantic hints guide navigation effectively
+
+See [workflow-logger.md](src/workflow-logger.md) for detailed documentation.
 
 ## Resources
 

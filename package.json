@@ -9,6 +9,7 @@
     "start": "node dist/mcp-petri-net-server.js",
     "demo": "ts-node src/example-file-operations.ts",
     "dev": "ts-node src/mcp-petri-net-server.ts",
+    "analytics": "ts-node src/workflow-analytics.ts",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "typecheck": "tsc --noEmit"

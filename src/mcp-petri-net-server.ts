@@ -16,6 +16,8 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { ColoredPetriNet, SemanticHint, TransitionNotEnabledError } from './colored-petri-net';
 import { createFileOperationsNet } from './example-file-operations';
+import { WorkflowLogger } from './workflow-logger';
+import { createLoggerConfig } from './logger-config';
 
 // Extended tool schema to include semantic hints
 interface PetriNetTool {
@@ -34,6 +36,7 @@ export class MCPPetriNetServer {
   private net: ColoredPetriNet;
   private toolsMap: Map<string, PetriNetTool> = new Map();
   private nameMapping: Map<string, string> = new Map(); // MCP name -> original name
+  private workflowLogger: WorkflowLogger;
   
   // Static mappings for contextual hints (Option 3)
   private requirementDescriptions: Map<string, string> = new Map([
@@ -65,6 +68,9 @@ export class MCPPetriNetServer {
         },
       }
     );
+
+    // Initialize workflow logger
+    this.workflowLogger = new WorkflowLogger(createLoggerConfig());
 
     // Initialize with file operations example
     this.net = createFileOperationsNet();
@@ -160,6 +166,7 @@ export class MCPPetriNetServer {
     // Handle tool execution
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
+      const startTime = Date.now();
       
       const tool = this.toolsMap.get(name);
       if (!tool) {
@@ -169,6 +176,20 @@ export class MCPPetriNetServer {
       // Special handling for semantic hints tool
       if (name === 'get_next_actions') {
         const hints = this.net.getEnabledTransitions();
+        
+        // Log the hint request
+        await this.workflowLogger.logToolCall({
+          toolName: name,
+          transitionId: 'meta_hints',
+          confidence: 1.0,
+          success: true,
+          inputTokens: [],
+          outputTokens: hints.map(h => h.transitionName),
+          nextEnabledTransitions: hints.map(h => h.transitionName),
+          executionTimeMs: Date.now() - startTime,
+          contextData: args
+        });
+
         return {
           content: [
             {
@@ -179,13 +200,30 @@ export class MCPPetriNetServer {
         };
       }
 
+      // Get current state for logging
+      const enabledTransitions = this.net.getEnabledTransitions();
+      const currentTransition = enabledTransitions.find(t => t.transitionId === tool.transitionId);
+      const confidence = currentTransition?.confidence || 0;
+
       try {
         // Execute the transition in the Petri net
-        // Don't pass args as binding - let the Petri net validate preconditions
         const result = await this.net.fireTransition(tool.transitionId);
         
         // Get new semantic hints after execution
         const newHints = this.net.getEnabledTransitions();
+        
+        // Log successful execution
+        await this.workflowLogger.logToolCall({
+          toolName: name,
+          transitionId: tool.transitionId,
+          confidence,
+          success: true,
+          inputTokens: this.extractInputTokens(args),
+          outputTokens: this.extractOutputTokens(result),
+          nextEnabledTransitions: newHints.map(h => h.transitionName),
+          executionTimeMs: Date.now() - startTime,
+          contextData: args
+        });
         
         return {
           content: [
@@ -196,6 +234,23 @@ export class MCPPetriNetServer {
           ]
         };
       } catch (error) {
+        // Log failed execution
+        const errorType = error instanceof TransitionNotEnabledError ? 'missing_tokens' : 'handler_error';
+        
+        await this.workflowLogger.logToolCall({
+          toolName: name,
+          transitionId: tool.transitionId,
+          confidence,
+          success: false,
+          errorType,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          inputTokens: this.extractInputTokens(args),
+          nextEnabledTransitions: error instanceof TransitionNotEnabledError ? 
+            error.availableTransitions.map(t => t.transitionName) : [],
+          executionTimeMs: Date.now() - startTime,
+          contextData: args
+        });
+
         // Handle TransitionNotEnabledError with helpful guidance
         if (error instanceof TransitionNotEnabledError) {
           return {
@@ -349,6 +404,34 @@ export class MCPPetriNetServer {
     return output;
   }
 
+  private extractInputTokens(args: any): string[] {
+    // Extract meaningful input tokens from tool arguments
+    if (!args || typeof args !== 'object') return [];
+    
+    const tokens: string[] = [];
+    for (const [key, value] of Object.entries(args)) {
+      if (typeof value === 'string' && value.trim()) {
+        tokens.push(`${key}:${value}`);
+      }
+    }
+    return tokens;
+  }
+
+  private extractOutputTokens(result: any): string[] {
+    // Extract meaningful output tokens from tool results
+    if (!result || typeof result !== 'object') return [];
+    
+    const tokens: string[] = [];
+    for (const [key, value] of Object.entries(result)) {
+      if (typeof value === 'string' && value.trim()) {
+        tokens.push(`${key}:${value}`);
+      } else if (Array.isArray(value)) {
+        tokens.push(`${key}:${value.length}_items`);
+      }
+    }
+    return tokens;
+  }
+
   async start() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
@@ -357,6 +440,11 @@ export class MCPPetriNetServer {
     this.net.addToken('start', {});
     
     // Server is ready
+  }
+
+  async shutdown() {
+    // Clean shutdown of workflow logger
+    this.workflowLogger.shutdown();
   }
 }
 
