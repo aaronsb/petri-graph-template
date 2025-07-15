@@ -1,6 +1,8 @@
 # Colored Petri Net for MCP Tool Orchestration
 
-A formal approach to agent prompt flow control that embraces the inherent creativity and diversity of language models by presenting tools as an attractive field of possibilities rather than rigid pathways.
+A **highly opinionated** approach to building functional, flexible toolkits for language model inference. This design pattern is backed by research and validated through multiple production implementations across diverse domains (enterprise systems, knowledge management, document authoring).
+
+Rather than forcing rigid pathways, this approach embraces the inherent creativity and diversity of language models by presenting tools as an attractive field of possibilities.
 
 ## 📄 Research Paper
 
@@ -15,6 +17,15 @@ The paper documents the discovery of why finite state machine-based AI agents sy
 - How semantic hints encode Petri net output arcs
 - Why multi-entry workflows are essential for real-world usage
 - The information-theoretic foundation behind these patterns
+
+**Validation through production implementations:**
+- **[Salesforce MCP](https://github.com/aaronsb/salesforce-cloud)**: CRM workflow optimization (12+ API calls → 1 semantic operation)
+- **[Slack MCP](https://github.com/aaronsb/slack-mcp)**: Team coordination with OODA Loop patterns
+- **[Obsidian MCP](https://github.com/aaronsb/obsidian-semantic-mcp)**: Knowledge graph navigation (20+ tools → 5 semantic operations)
+- **[TeXFlow MCP](https://github.com/aaronsb/texflow-mcp)**: Document lifecycle intelligence (used to write the paper)
+- **[Targetprocess MCP](https://github.com/aaronsb/apptio-target-process-mcp)**: Project management workflows
+
+These implementations demonstrate consistent emergence of semantic hinting patterns across diverse domains.
 
 ## The Philosophy: APIs as Interpretative Landscapes
 
@@ -149,6 +160,8 @@ This pattern allows models to:
 3. **Express intent clearly** - The semantic structure guides proper usage
 
 ## Usage
+
+> **Note**: This is a reference implementation demonstrating the design pattern. The code represents a highly opinionated approach to building LLM toolkits based on research findings and production experience across multiple domains.
 
 ### Installation
 ```bash
