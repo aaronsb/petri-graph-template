@@ -168,14 +168,14 @@ npm run lint # Lint code
 ```mermaid
 stateDiagram-v2
     [*] --> Start
-    Start --> SearchResults: "search:files"
-    SearchResults --> FileContent: "search:file:read"
-    FileContent --> FileWritten: "write:file"
-    FileContent --> FileWritten: "modify:file:write"
-    FileWritten --> [*]
+    Start --> Search_Results: search:files
+    Search_Results --> File_Content: search:file:read
+    File_Content --> File_Written: write:file
+    File_Content --> File_Written: modify:file:write
+    File_Written --> [*]
     
-    note right of SearchResults: Multiple paths available\nModel chooses based on context
-    note right of FileContent: Concurrent operations possible\nTokens can exist in multiple places
+    note right of Search_Results: Multiple paths available\nModel chooses based on context
+    note right of File_Content: Concurrent operations possible\nTokens can exist in multiple places
 ```
 
 ## Real-World Applications
