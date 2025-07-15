@@ -1527,6 +1527,14 @@ This reference implementation demonstrates that the theoretical patterns describ
 
 [15] Bockelie, A. (2025). GitHub Projects Portfolio: Semantic Hinting and Information Flow Optimization in AI Systems. GitHub. \url{https://github.com/aaronsb}
 
+[16] Bockelie, A. (2025). obsidian-semantic-mcp: A semantic MCP server for Obsidian that simplifies 20+ tools into 5 AI-optimized operations with intelligent workflow hints and state-aware suggestions. GitHub. \url{https://github.com/aaronsb/obsidian-semantic-mcp}
+
+[17] Bockelie, A. (2025). wordpress-mcp: A personality-based Model Context Protocol (MCP) server for WordPress that enables AI assistants to create, edit, and manage content through semantic operations with role-appropriate tools. GitHub. \url{https://github.com/aaronsb/wordpress-mcp}
+
+[18] Bockelie, A. (2025). salesforce-cloud: MCP server providing AI-powered Salesforce tools for opportunity intelligence, conversation analysis, business case generation, and CRUD operations with natural language interaction. GitHub. \url{https://github.com/aaronsb/salesforce-cloud}
+
+[19] Bockelie, A. (2025). slack-mcp: Model Context Protocol (MCP) server for Slack that implements an OODA Loop pattern for intelligent workspace interaction, supporting both stdio and SSE transports without requiring admin permissions. GitHub. \url{https://github.com/aaronsb/slack-mcp}
+
 \subsection*{From the Architecture Guide}
 
 Van der Aalst, W.M.P. (2016). Process Mining: Data Science in Action. Springer. DOI: 10.1007/978-3-662-49851-4
@@ -1608,6 +1616,16 @@ This convergence isn't coincidental. Multiple independent implementations are di
 \textbf{LangGraph and LangChain}: Inadvertently implementing context-aware state management by ``feeding relevant context from a graph.'' They're optimizing information flow without explicitly recognizing they're building distributed state machines.
 
 \textbf{Semantic Hinting Approaches}: A broader pattern visible across multiple projects [15] where tools return not just data but guidance about next actions. This represents information encoding about workflow possibilities.
+
+Examples from the broader ecosystem include:
+\begin{itemize}
+\item \textbf{Obsidian Semantic MCP} [16]: ``Simplifies 20+ tools into 5 AI-optimized operations with intelligent workflow hints and state-aware suggestions''
+\item \textbf{WordPress MCP} [17]: ``Personality-based Model Context Protocol server that enables AI assistants to create, edit, and manage content through semantic operations with role-appropriate tools''
+\item \textbf{Salesforce Cloud MCP} [18]: ``AI-powered Salesforce tools for opportunity intelligence, conversation analysis, business case generation, and CRUD operations with natural language interaction''
+\item \textbf{Slack MCP} [19]: ``Implements an OODA Loop pattern for intelligent workspace interaction''
+\end{itemize}
+
+These implementations demonstrate the consistent emergence of semantic guidance patterns across diverse domains—from note-taking to CRM to team communication—validating the universality of information-flow optimization principles.
 
 \textbf{Multi-Entry Architectures}: Systems that allow users to begin workflows at any logical point, eliminating forced linear progression. This optimizes information utilization by not requiring redundant context establishment.
 
